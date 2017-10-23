@@ -7,11 +7,20 @@ using aspNetCore2.Models;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using aspNetCore2.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace aspNetCore2.Controllers
 {
     public class PublicController : Controller
     {
+        private ISessionService _sessionService;
+
+        public PublicController(ISessionService sessionService)
+        {
+            _sessionService = sessionService;
+        }
+
         public IActionResult Index() => View();
 
         [HttpPost]
@@ -31,6 +40,16 @@ namespace aspNetCore2.Controllers
             }
             if (model.Name == "root" && hash == "jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=")
             {
+                double timeout = double.Parse(Program.Configuration["sessionTimeout"]);
+                CookieOptions cookieOptions = new CookieOptions()
+                {
+                    Path = "/",
+                    Expires = DateTime.Now.AddSeconds(timeout),
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Lax,
+                    Secure = false
+                };
+                Response.Cookies.Append("sid", _sessionService.AddSession("root").ToString(), cookieOptions);
                 return RedirectToAction("Index", "Private");
             }
             else

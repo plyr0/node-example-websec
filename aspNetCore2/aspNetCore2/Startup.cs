@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using aspNetCore2.Providers;
+using aspNetCore2.Interfaces;
+using aspNetCore2.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace aspNetCore2
 {
@@ -13,13 +17,14 @@ namespace aspNetCore2
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>();
             services.AddMvc();
+            services.AddSingleton<ISessionService, SessionService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseStatusCodePages();
-            //app.UseDeveloperExceptionPage();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
