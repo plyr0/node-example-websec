@@ -1,3 +1,4 @@
+#!/usr/bin/env nodejs
 // https://github.com/naugtur/node-example-websec
 
 const express = require('express')
@@ -21,7 +22,7 @@ app.get('/public/login', (req, res) => {
   const hash = crypto.createHash('sha256').update(req.query.password).digest('base64')
 
   if (req.query.login === 'root' && hash === 'jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=') {
-    res.cookie('sid', uuid, { maxAge: 900000, httpOnly: true /*, secure: true */})
+    res.cookie('sid', uuid, { maxAge: 900000, httpOnly: true /*, secure: true */, sameSite: "lax"})
     sessionStorage[uuid] = {
       user: 'root'
     }
@@ -34,7 +35,7 @@ app.get('/public/login', (req, res) => {
   }
 })
 
-var csrfProtection = csrf({ cookie: false, sessionKEey:'session' })
+var csrfProtection = csrf({ cookie: false, sessionKey:'session' })
 
 // I know we're implementing everything to learn how, but cookie parsing... come on.
 app.use('/private', cookieParser())

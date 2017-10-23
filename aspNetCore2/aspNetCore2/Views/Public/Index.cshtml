@@ -1,0 +1,33 @@
+﻿@model aspNetCore2.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<h2>Log in</h2>
+
+@using (Html.BeginForm("Login", "Public", null, FormMethod.Post, false, null))
+{
+    <div class="form-group">
+        <div class="row">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "username" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2">
+                <input type="submit" value="Log in" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
