@@ -24,10 +24,11 @@ namespace aspNetCore2.Controllers
         public IActionResult Index() => View();
 
         [HttpPost]
+        //[ValidateAntiForgeryToken]
         public IActionResult Login(LoginViewModel model) {
             if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
             {
-                return new StatusCodeResult(401);
+                return new StatusCodeResult(400);
             }
 
             string hash = string.Empty;

@@ -18,14 +18,14 @@ namespace aspNetCore2.Controllers
 
         public IActionResult Index()
         {
-            KeyValuePair<string, string>? cookie = Request.Cookies.FirstOrDefault(c => c.Key == "sid");
-            if (cookie != null && _sessionService.IsValid(cookie?.Value)) {
+            if (Request.Cookies.ContainsKey("sid") && _sessionService.IsValid(Request.Cookies["sid"]))
+            {
                 return View();
-            } else
+            }
+            else
             {
                 return new StatusCodeResult(401);
             }
-            
         }
     }
 }
