@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace aspNetCore2.Models
 {
@@ -11,10 +13,14 @@ namespace aspNetCore2.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Program.Configuration["connectionString"]);
+                var config = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json").Build();
+                optionsBuilder.UseSqlServer(config["connectionString"]);
             }
         }
         
         public DbSet<SessionModel> Sessions { get; set; }
+        public DbSet<TwitModel> Twits { get; set; }
     }
 }
