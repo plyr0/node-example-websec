@@ -1,0 +1,42 @@
+﻿@model IEnumerable<aspNetCore2.Models.TwitModel>
+
+@{
+    ViewData["Title"] = "Twits";
+}
+
+<h2>Twits</h2>
+
+<p>
+    @Html.ActionLink("Login", "Index")
+    @Html.ActionLink("Twit", "Index", "Private")
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Time)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

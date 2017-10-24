@@ -29,7 +29,7 @@ namespace aspNetCore2
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Public}/{action=Index}/{id?}");
+                    template: "{controller=Public}/{action=Twits}/{id?}");
             });
         }
     }

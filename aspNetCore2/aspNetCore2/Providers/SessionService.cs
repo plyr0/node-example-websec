@@ -23,6 +23,25 @@ namespace aspNetCore2.Providers
             return sm.Id;
         }
 
+        public string GetName(string id)
+        {
+            KillOldSessions();
+            Guid gid;
+            try
+            {
+                gid = new Guid(id);
+            }
+            catch (Exception) 
+            {
+                return null;
+            }
+            using (var db = new AppDbContext())
+            {
+                var current = db.Sessions.FirstOrDefault(s => s.Id == gid);
+                return current?.Username;
+            }
+        }
+
         public bool IsValid(string id)
         {
             KillOldSessions();

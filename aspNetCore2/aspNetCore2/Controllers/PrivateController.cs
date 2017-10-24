@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using aspNetCore2.Interfaces;
+using aspNetCore2.Models;
 
 namespace aspNetCore2.Controllers
 {
@@ -26,6 +25,28 @@ namespace aspNetCore2.Controllers
             {
                 return new StatusCodeResult(401);
             }
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult Add(string model)
+        {
+            if (!Request.Cookies.ContainsKey("sid") || !_sessionService.IsValid(Request.Cookies["sid"]))
+            {
+                return new StatusCodeResult(401);
+            }
+
+            var twit = new TwitModel()
+            {
+                Text = model,
+                Time = DateTime.Now,
+                Username = _sessionService.GetName(Request.Cookies["sid"])
+            };
+            using(var db = new AppDbContext()){
+                db.Twits.Add(twit);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Twits", "Public");
         }
     }
 }

@@ -1,7 +1,24 @@
-﻿
+﻿@model string
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Create";
 }
 
 <h2>Logged in!</h2>
 
+@using (Html.BeginForm("Add", "Private", null, FormMethod.Post, false/*antiforgery*/, null))
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-10">
+                @Html.TextArea("model", "")
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2">
+                <input type="submit" value="Twit" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}

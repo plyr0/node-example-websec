@@ -9,5 +9,6 @@ namespace aspNetCore2.Interfaces
     {
         Guid AddSession(string user);
         bool IsValid(string id);
+        string GetName(string id);
     }
 }

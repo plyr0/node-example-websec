@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using aspNetCore2.Models;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.CodeAnalysis;
 using aspNetCore2.Interfaces;
 using Microsoft.AspNetCore.Http;
 
@@ -25,7 +22,8 @@ namespace aspNetCore2.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public IActionResult Login(LoginViewModel model) {
+        public IActionResult Login(LoginViewModel model)
+        {
             if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
             {
                 return new StatusCodeResult(400);
@@ -56,6 +54,14 @@ namespace aspNetCore2.Controllers
             else
             {
                 return new StatusCodeResult(401);
+            }
+        }
+        
+        public IActionResult Twits()
+        {
+            using (var db = new AppDbContext())
+            {
+                return View(db.Twits.ToList());
             }
         }
     }
