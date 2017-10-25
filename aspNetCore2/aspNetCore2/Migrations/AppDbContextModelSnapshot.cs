@@ -25,7 +25,7 @@ namespace aspNetCore2.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long>("TimeStamp");
+                    b.Property<DateTime>("TimeStamp");
 
                     b.Property<string>("Username");
 

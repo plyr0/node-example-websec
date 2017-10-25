@@ -6,6 +6,6 @@ namespace aspNetCore2.Models
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
-        public long TimeStamp { get; set; } 
+        public DateTime TimeStamp { get; set; } 
     }
 }

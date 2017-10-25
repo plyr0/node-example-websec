@@ -11,8 +11,8 @@ using System;
 namespace aspNetCore2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20171023212857_Twits")]
-    partial class Twits
+    [Migration("20171025190855_first")]
+    partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,7 @@ namespace aspNetCore2.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long>("TimeStamp");
+                    b.Property<DateTime>("TimeStamp");
 
                     b.Property<string>("Username");
 

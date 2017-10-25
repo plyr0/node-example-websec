@@ -2,6 +2,8 @@
 using aspNetCore2.Models;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace aspNetCore2.Providers
 {
@@ -9,10 +11,9 @@ namespace aspNetCore2.Providers
     {
         public Guid AddSession(string user)
         {
-            KillOldSessions();
             SessionModel sm = new SessionModel()
             {
-                TimeStamp = DateTime.Now.Ticks,
+                TimeStamp = DateTime.Now,
                 Username = user
             };
             using(var db = new AppDbContext())
@@ -57,12 +58,37 @@ namespace aspNetCore2.Providers
             }
         }
 
+        public Guid? Login(LoginViewModel model)
+        {
+            KillOldSessions();
+            if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
+            {
+                return null;
+            }
+            string hash = string.Empty;
+            using (var algorithm = SHA256.Create())
+            {
+                byte[] input = Encoding.UTF8.GetBytes(model.Password);
+                byte[] output = algorithm.ComputeHash(input);
+                hash = Convert.ToBase64String(output);
+                System.Diagnostics.Debug.WriteLine(hash);
+            }
+            if (model.Name == "root" && hash == "jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=")
+            {
+                return AddSession("root");
+            } else
+            {
+                return null;
+            }
+        }
+
         private void KillOldSessions()
         {
             using (var db = new AppDbContext())
             {
                 double timeout = double.Parse(Program.Configuration["sessionTimeout"]);
-                var old = db.Sessions.Where(s => s.TimeStamp > DateTime.Now.AddSeconds(timeout).Ticks);
+                var old = db.Sessions.Where(s => DateTime.Now > s.TimeStamp.AddSeconds(timeout));
+                System.Diagnostics.Debug.WriteLine("SESSIONS old " + old.ToList().Count);
                 if (old != null)
                 {
                     db.Sessions.RemoveRange(old);

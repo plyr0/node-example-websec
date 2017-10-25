@@ -18,43 +18,39 @@ namespace aspNetCore2.Controllers
             _sessionService = sessionService;
         }
 
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+            if (Request.Cookies.ContainsKey("sid") && _sessionService.IsValid(Request.Cookies["sid"]))
+            {
+                return new RedirectToActionResult("Index", "Private", null);
+            }
+            else
+            {
+                return View();
+            }
+        }
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public IActionResult Login(LoginViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
-            {
-                return new StatusCodeResult(400);
-            }
-
-            string hash = string.Empty;
-            using (var algorithm = SHA256.Create())
-            {
-                byte[] input = Encoding.UTF8.GetBytes(model.Password);
-                byte[] output = algorithm.ComputeHash(input);
-                hash = Convert.ToBase64String(output);
-                System.Diagnostics.Debug.WriteLine(hash);
-            }
-            if (model.Name == "root" && hash == "jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=")
-            {
-                double timeout = double.Parse(Program.Configuration["sessionTimeout"]);
-                CookieOptions cookieOptions = new CookieOptions()
-                {
-                    Path = "/",
-                    Expires = DateTime.Now.AddSeconds(timeout),
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Lax,
-                    Secure = false
-                };
-                Response.Cookies.Append("sid", _sessionService.AddSession("root").ToString(), cookieOptions);
-                return RedirectToAction("Index", "Private");
-            }
-            else
+            Guid? logon = _sessionService.Login(model);
+            if (logon == null)
             {
                 return new StatusCodeResult(401);
             }
+
+            double timeout = double.Parse(Program.Configuration["sessionTimeout"]);
+            CookieOptions cookieOptions = new CookieOptions()
+            {
+                Path = "/",
+                Expires = DateTime.Now.AddSeconds(timeout),
+                HttpOnly = true,
+                SameSite = SameSiteMode.Lax,
+                Secure = false
+            };
+            Response.Cookies.Append("sid", logon.ToString(), cookieOptions);
+            return RedirectToAction("Index", "Private");
         }
         
         public IActionResult Twits()
