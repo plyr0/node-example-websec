@@ -3,16 +3,20 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using aspNetCore2.Interfaces;
 using aspNetCore2.Models;
+using Microsoft.AspNetCore.Antiforgery;
+using System.Threading.Tasks;
 
 namespace aspNetCore2.Controllers
 {
     public class PrivateController : Controller
     {
         private ISessionService _sessionService;
+        private IAntiforgery _antiForgery;
 
-        public PrivateController(ISessionService sessionService)
+        public PrivateController(ISessionService sessionService, IAntiforgery antiforgery)
         {
             _sessionService = sessionService;
+            _antiForgery = antiforgery;
         }
 
         public IActionResult Index()
@@ -29,8 +33,13 @@ namespace aspNetCore2.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public IActionResult Add(string model)
+        public async Task<IActionResult> Add(string model)
         {
+            if (!await _antiForgery.IsRequestValidAsync(Request.HttpContext))
+            {
+                return new StatusCodeResult(401);
+            }
+            
             if (!Request.Cookies.ContainsKey("sid") || !_sessionService.IsValid(Request.Cookies["sid"]))
             {
                 return new StatusCodeResult(401);

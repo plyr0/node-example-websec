@@ -5,7 +5,7 @@
 
 <h2>Logged in!</h2>
 
-@using (Html.BeginForm("Add", "Private", null, FormMethod.Post, false/*antiforgery*/, null))
+@using (Html.BeginForm("Add", "Private", null, FormMethod.Post, true/*antiforgery*/, null))
 {
     <div class="form-group">
         <div class="row">

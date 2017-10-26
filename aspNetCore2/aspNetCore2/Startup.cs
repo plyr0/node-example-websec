@@ -24,6 +24,11 @@ namespace aspNetCore2
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.Use(async (ctx, next) =>
+            {
+                ctx.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+                await next();
+            });
             app.UseStatusCodePages();
             app.UseMvc(routes =>
             {
